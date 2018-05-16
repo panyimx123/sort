@@ -96,26 +96,42 @@ public class Main {
         return array;
     }
 
+    private static int[] shellSort(int[] array) {
+        int j;
+        for (int gap = array.length / 2; gap > 0; gap /= 2) {
+            //System.out.println(gap);
+            for (int i = gap; i < array.length; i++) {
+                int tmp = array[i];
+                for (j = i; j >= gap && tmp > array[j - gap]; j -= gap) {
+                    array[j] = array[j - gap];
+                }
+                array[j] = tmp;
+                //print(array);
+            }
+        }
+        return array;
+    }
+
     private static void print(int[] array) {
         System.out.println(Arrays.stream(array).mapToObj(String::valueOf)
                 .collect(Collectors.joining(",")));
     }
 
     private static void runSort(Function<int[], int[]> sort, String sortname) {
-        System.out.println("********************");
         System.out.print("before sort:");
         print(unSort);
         System.out.println("sort func name:" + sortname);
         int[] result = sort.apply(unSort.clone());
         System.out.print("after sort:");
         print(result);
-        System.out.println("********************");
+        System.out.println("--------------------------------------------------");
     }
 
     public static void main(String[] args) {
-        runSort(Main::maoPaoSort,"maoPaoSort");
-        runSort(Main::maoPaoSort1,"maoPaoSort1");
-        runSort(Main::maoPaoSort2,"maoPaoSort2");
-        runSort(Main::insertSort,"insertSort");
+        runSort(Main::maoPaoSort, "maoPaoSort");
+        runSort(Main::maoPaoSort1, "maoPaoSort1");
+        runSort(Main::maoPaoSort2, "maoPaoSort2");
+        runSort(Main::insertSort, "insertSort");
+        runSort(Main::shellSort, "shellSort");
     }
 }

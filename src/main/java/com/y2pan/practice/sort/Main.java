@@ -143,13 +143,12 @@ public class Main {
         int tmp;
         for (tmp = array[i]; leftChild(i) < n; i = child) {
             child = leftChild(i);
-            if(child != n - 1 && array[child] < array[child + 1]) {
-                child ++;
+            if (child != n - 1 && array[child] < array[child + 1]) {
+                child++;
             }
             if (tmp < array[child]) {
                 array[i] = array[child];
-            } else
-            {
+            } else {
                 break;
             }
         }
@@ -170,6 +169,49 @@ public class Main {
             array[i] = tmp;
             percDown(array, 0, i);
         }
+        return array;
+    }
+
+    private static void merge(int[] array, int[] tmpArray, int leftPos, int rightPos, int rightEnd) {
+        int leftEnd = rightPos - 1;
+        int tmpPos = leftPos;
+        int numElements = rightEnd - leftPos + 1;
+        while (leftPos <= leftEnd && rightPos <= rightEnd) {
+            if (array[leftPos] < array[rightPos]) {
+                tmpArray[tmpPos++] = array[leftPos++];
+            } else {
+                tmpArray[tmpPos++] = array[rightPos++];
+            }
+        }
+        while (leftPos <= leftEnd) {
+            tmpArray[tmpPos++] = array[leftPos++];
+        }
+
+        while (rightPos <= rightEnd) {
+            tmpArray[tmpPos++] = array[rightPos++];
+        }
+
+        for (int i = 0; i < numElements; i++, rightEnd--) {
+            array[rightEnd] = tmpArray[rightEnd];
+        }
+    }
+
+    private static void mergeSort(int[] array, int[] tmpArray, int left, int right) {
+        if (left < right) {
+            int center = (left + right) / 2;
+            mergeSort(array, tmpArray, left, center);
+            mergeSort(array, tmpArray, center + 1, right);
+            merge(array, tmpArray, left, center + 1, right);
+        }
+    }
+
+    /**
+     * worst      avg         best
+     * O(N*log2N) O(N*log2N)  O(N*log2N)
+     */
+    private static int[] mergeSort(int[] array) {
+        int[] tmpArray = new int[array.length];
+        mergeSort(array, tmpArray, 0, array.length - 1);
         return array;
     }
 
@@ -196,5 +238,6 @@ public class Main {
         runSort(Main::shellSort, "shellSort");
         runSort(Main::selectSort, "selectSort");
         runSort(Main::heapSort, "heapSort");
+        runSort(Main::mergeSort, "mergeSort");
     }
 }

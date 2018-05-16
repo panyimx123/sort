@@ -5,7 +5,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Main {
-    private static int[] unSort = {23, 6, 84, 34, 13, 32, 54, 12, 3, 4};
+    private static int[] unSort = {23, 6, 84, 34, 13, 32, 54, 2, 3, 4};
 
     /**
      * worst  avg     best
@@ -96,6 +96,10 @@ public class Main {
         return array;
     }
 
+    /**
+     * worst  avg       best
+     * O(n^2) O(n^1.3)  O(n)
+     */
     private static int[] shellSort(int[] array) {
         int j;
         for (int gap = array.length / 2; gap > 0; gap /= 2) {
@@ -108,6 +112,63 @@ public class Main {
                 array[j] = tmp;
                 //print(array);
             }
+        }
+        return array;
+    }
+
+    /**
+     * worst  avg     best
+     * O(n^2) O(n^2)  O(n)
+     */
+    private static int[] selectSort(int[] array) {
+        int temp;
+        for (int i = 0; i < array.length; i++) {
+            for (int j = i + 1; j < array.length; j++) {
+                if (array[i] > array[j]) {
+                    temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                }
+            }
+        }
+        return array;
+    }
+
+    private static int leftChild(int i) {
+        return 2 * i + 1;
+    }
+
+    private static void percDown(int[] array, int i, int n) {
+        int child = 0;
+        int tmp;
+        for (tmp = array[i]; leftChild(i) < n; i = child) {
+            child = leftChild(i);
+            if(child != n - 1 && array[child] < array[child + 1]) {
+                child ++;
+            }
+            if (tmp < array[child]) {
+                array[i] = array[child];
+            } else
+            {
+                break;
+            }
+        }
+        array[i] = tmp;
+    }
+
+    /**
+     * worst      avg         best
+     * O(N*log2N) O(N*log2N)  O(N*log2N)
+     */
+    private static int[] heapSort(int[] array) {
+        for (int i = array.length / 2 - 1; i >= 0; i--) {
+            percDown(array, i, array.length);
+        }
+        for (int i = array.length - 1; i > 0; i--) {
+            int tmp = array[0];
+            array[0] = array[i];
+            array[i] = tmp;
+            percDown(array, 0, i);
         }
         return array;
     }
@@ -133,5 +194,7 @@ public class Main {
         runSort(Main::maoPaoSort2, "maoPaoSort2");
         runSort(Main::insertSort, "insertSort");
         runSort(Main::shellSort, "shellSort");
+        runSort(Main::selectSort, "selectSort");
+        runSort(Main::heapSort, "heapSort");
     }
 }

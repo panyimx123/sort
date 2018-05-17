@@ -299,17 +299,33 @@ public class Main {
     }
 
     private static String[] countingRadixSort(String[] array, int stringLen) {
-        final int BUCKET = 256;
+        final int BUCKETS = 256;
         int N = array.length;
         String[] buffer = new String[N];
         String[] in = array;
         String[] out = buffer;
-        for (int pos = stringLen -1; pos >=0; pos --) {
-            int[] count = new int[BUCKET + 1];
-            for (int i=0; i< N; i++) {
-                count[in[i].charAt(pos) + 1] ++;
+        for (int pos = stringLen - 1; pos >= 0; pos--) {
+            int[] count = new int[BUCKETS + 1];
+            for (int i = 0; i < N; i++) {
+                count[in[i].charAt(pos) + 1]++;
+            }
+            for (int b = 1; b <= BUCKETS; b++) {
+                count[b] += count[b - 1];
+            }
+            for (int i = 0; i < N; i++) {
+                out[count[in[i].charAt(pos)]++] = in[i];
+            }
+            String[] tmp = in;
+            in = out;
+            out = tmp;
+        }
+
+        if (stringLen % 2 == 1) {
+            for (int i = 0; i < array.length; i++) {
+                out[i] = in[i];
             }
         }
+        return out;
     }
 
     private static void swap(int[] array, int i, int j) {
@@ -348,5 +364,6 @@ public class Main {
         runSort(Main::mergeSort, "mergeSort");
         runSort(Main::quickSort, "quickSort");
         print(Main.radixSortA(unSortStr.clone(), 3));
+        print(Main.countingRadixSort(unSortStr.clone(), 3));
     }
 }

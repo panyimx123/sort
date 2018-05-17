@@ -215,6 +215,71 @@ public class Main {
         return array;
     }
 
+    /**
+     * worst      avg         best
+     * O(N*log2N) O(N*log2N)  O(N*log2N)
+     */
+    private static int[] quickSort(int[] array) {
+        quickSort(array, 0, array.length - 1);
+        return array;
+    }
+
+    private static void quickSort(int[] array, int left, int right) {
+        if (left + 2 <= right) {
+            int pivot = median3(array, left, right);
+            int i = left + 1, j = right - 2;
+            for (; ; ) {
+                while (array[i] < pivot) {
+                    i++;
+                }
+                while (array[j] > pivot) {
+                    j--;
+                }
+                if (i < j) {
+                    swap(array, i, j);
+                } else {
+                    break;
+                }
+            }
+
+            swap(array, i, right - 1);
+            quickSort(array, left, i - 1);
+            quickSort(array, i + 1, right);
+        } else {
+            insectionSort(array, left, right);
+        }
+    }
+
+    private static void insectionSort(int[] array, int left, int right) {
+        for (int i = left; i < right; i++) {
+            for (int j = i, tmp = array[i + 1]; j >= 0 && tmp < array[j]; j--) {
+                array[i + 1] = array[j];
+                array[j] = tmp;
+            }
+        }
+    }
+
+    private static int median3(int[] array, int left, int right) {
+        int center = (left + right) / 2;
+        if (array[center] < array[left]) {
+            swap(array, center, left);
+        }
+        if (array[right] < array[left]) {
+            swap(array, left, right);
+        }
+        if (array[right] < array[center]) {
+            swap(array, right, center);
+        }
+        swap(array, center, right - 1);
+        return array[right - 1];
+    }
+
+    private static void swap(int[] array, int i, int j) {
+        int tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+    }
+
     private static void print(int[] array) {
         System.out.println(Arrays.stream(array).mapToObj(String::valueOf)
                 .collect(Collectors.joining(",")));
@@ -239,5 +304,6 @@ public class Main {
         runSort(Main::selectSort, "selectSort");
         runSort(Main::heapSort, "heapSort");
         runSort(Main::mergeSort, "mergeSort");
+        runSort(Main::quickSort, "quickSort");
     }
 }

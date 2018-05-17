@@ -1,11 +1,13 @@
 package com.y2pan.practice.sort;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Main {
     private static int[] unSort = {23, 6, 84, 34, 13, 32, 54, 2, 3, 4};
+    private static String[] unSortStr = {"sdf", "asf", "wrw", "srf", "sdf", "yht"};
 
     /**
      * worst  avg     best
@@ -274,6 +276,42 @@ public class Main {
         return array[right - 1];
     }
 
+    private static String[] radixSortA(String[] array, int stringLen) {
+        final int BUCKETS = 256;
+        ArrayList[] buckets = new ArrayList[BUCKETS];
+        for (int i = 0; i < BUCKETS; i++) {
+            buckets[i] = new ArrayList();
+        }
+
+        for (int pos = stringLen - 1; pos >= 0; pos--) {
+            for (String s : array) {
+                buckets[s.charAt(pos)].add(s);
+            }
+            int idx = 0;
+            for (ArrayList<String> thisBucket : buckets) {
+                for (String s : thisBucket) {
+                    array[idx++] = s;
+                }
+                thisBucket.clear();
+            }
+        }
+        return array;
+    }
+
+    private static String[] countingRadixSort(String[] array, int stringLen) {
+        final int BUCKET = 256;
+        int N = array.length;
+        String[] buffer = new String[N];
+        String[] in = array;
+        String[] out = buffer;
+        for (int pos = stringLen -1; pos >=0; pos --) {
+            int[] count = new int[BUCKET + 1];
+            for (int i=0; i< N; i++) {
+                count[in[i].charAt(pos) + 1] ++;
+            }
+        }
+    }
+
     private static void swap(int[] array, int i, int j) {
         int tmp = array[i];
         array[i] = array[j];
@@ -283,6 +321,10 @@ public class Main {
     private static void print(int[] array) {
         System.out.println(Arrays.stream(array).mapToObj(String::valueOf)
                 .collect(Collectors.joining(",")));
+    }
+
+    private static void print(String[] array) {
+        System.out.println(Arrays.stream(array).collect(Collectors.joining(",")));
     }
 
     private static void runSort(Function<int[], int[]> sort, String sortname) {
@@ -305,5 +347,6 @@ public class Main {
         runSort(Main::heapSort, "heapSort");
         runSort(Main::mergeSort, "mergeSort");
         runSort(Main::quickSort, "quickSort");
+        print(Main.radixSortA(unSortStr.clone(), 3));
     }
 }
